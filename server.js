@@ -44,13 +44,13 @@ app.post("/store_data", async (req, res) => {
     // Modify the data to include the desired fields
     const modifiedData = {
       _id: new mongoose.Types.ObjectId(), // Generate a new ObjectId
-      author: "",
+      author: "chrome-extension",
       title: postData.title,
       body: postData.body,
       imageUrl: postData.imageUrl,
-      published: true,
+      published: false,
       tags: [],
-      type: "",
+      type: "PREP",
       category: ["658ee65ddf60336274053be7", "658ee4c0a98b224d178fe5f2"],
       createdAt: postData.createdAt,
       slug: "",
