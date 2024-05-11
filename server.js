@@ -47,7 +47,7 @@ app.post("/store_data", async (req, res) => {
       author: "",
       title: postData.title,
       body: postData.body,
-      imageUrl: "",
+      imageUrl: postData.imageUrl,
       published: true,
       tags: [],
       type: "",
