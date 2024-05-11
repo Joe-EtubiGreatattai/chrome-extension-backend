@@ -53,7 +53,7 @@ app.post("/store_data", async (req, res) => {
       type: "PREP",
       category: ["658ee65ddf60336274053be7", "658ee4c0a98b224d178fe5f2"],
       createdAt: postData.createdAt,
-      slug: "",
+      slug: postData.slug, // Use the slug from the incoming data
       __v: 0,
     };
 
