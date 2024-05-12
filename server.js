@@ -49,14 +49,14 @@ app.post("/store_data", async (req, res) => {
     const postId = new mongoose.Types.ObjectId();
 
     // AI to rewrite title
-    const titlePrompt = "rewrite this blog post title: " + postData.title;
+    const titlePrompt = "completely rewrite this and change the grammar to avoid plagarism: " + postData.title;
     const titleModel = genAI.getGenerativeModel({ model: "gemini-pro" });
     const titleResult = await titleModel.generateContent(titlePrompt);
     const titleResponse = await titleResult.response;
     const rewrittenTitle = await titleResponse.text();
 
     // AI to rewrite body
-    const bodyPrompt = "rewrite this blog post body:" + postData.body;
+    const bodyPrompt = "completely rewrite this and change the grammar to avoid plagarism: " + postData.body;
     const bodyModel = genAI.getGenerativeModel({ model: "gemini-pro" });
     const bodyResult = await bodyModel.generateContent(bodyPrompt);
     const bodyResponse = await bodyResult.response;
