@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 dotenv.config();
 const app = express();
@@ -36,24 +37,44 @@ const Post = mongoose.model("Post", postSchema);
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-// Endpoint to receive data and add it to the post collection
+// Initialize the Google Generative AI
+const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+
+// Endpoint to receive data, rewrite title and body using AI, and add it to the post collection
 app.post("/store_data", async (req, res) => {
   try {
     const postData = req.body;
 
+    // Generate a new ObjectId
+    const postId = new mongoose.Types.ObjectId();
+
+    // AI to rewrite title
+    const titlePrompt = "rewrite this blog post title: " + postData.title;
+    const titleModel = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const titleResult = await titleModel.generateContent(titlePrompt);
+    const titleResponse = await titleResult.response;
+    const rewrittenTitle = await titleResponse.text();
+
+    // AI to rewrite body
+    const bodyPrompt = "rewrite this blog post body:" + postData.body;
+    const bodyModel = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const bodyResult = await bodyModel.generateContent(bodyPrompt);
+    const bodyResponse = await bodyResult.response;
+    const rewrittenBody = await bodyResponse.text();
+
     // Modify the data to include the desired fields
     const modifiedData = {
-      _id: new mongoose.Types.ObjectId(), // Generate a new ObjectId
+      _id: postId,
       author: "chrome-extension",
-      title: postData.title,
-      body: postData.body,
+      title: rewrittenTitle,
+      body: rewrittenBody,
       imageUrl: postData.imageUrl,
       published: false,
       tags: [],
       type: "PREP",
       category: ["658ee65ddf60336274053be7", "658ee4c0a98b224d178fe5f2"],
       createdAt: postData.createdAt,
-      slug: postData.slug, // Use the slug from the incoming data
+      slug: postData.slug,
       __v: 0,
     };
 
